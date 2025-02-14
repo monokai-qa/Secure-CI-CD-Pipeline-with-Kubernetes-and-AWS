@@ -1,0 +1,4 @@
+List of commands:
+- aws configure --profile monokai.talkdesk // Add configuration to the IAM created in AWS platform
+- aws s3 ls // Verify all S3s
+- terraform init // Initialize Terraform
