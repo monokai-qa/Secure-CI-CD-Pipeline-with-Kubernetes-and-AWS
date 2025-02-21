@@ -15,6 +15,7 @@ Tech Stack:
 
 Project Breakdown
 Phase 1: Infrastructure Setup with Terraform
+
 ✅ Use Terraform to provision AWS infrastructure:
 * Create a VPC, subnets, security groups
 * Deploy an EKS (Kubernetes) cluster
@@ -22,11 +23,15 @@ Phase 1: Infrastructure Setup with Terraform
 * Configure IAM roles & policies securely
 
 Phase 2: Kubernetes Cluster Setup & Deployment
+
 ✅ Deploy a simple Node.js or Python Flask app in a Docker container
+
 ✅ Use Helm charts to manage Kubernetes deployments
+
 ✅ Implement Ingress Controller for traffic routing
 
 Phase 3: CI/CD Pipeline Automation
+
 ✅ Use Jenkins/GitHub Actions to:
 * Build & push Docker images to Amazon ECR
 * Deploy to Kubernetes using Helm
@@ -34,13 +39,19 @@ Phase 3: CI/CD Pipeline Automation
 * Run container runtime security with Falco
 
 Phase 4: Security Hardening (DevSecOps)
+
 ✅ Implement IAM best practices (least privilege access)
+
 ✅ Set up AWS Security Hub & CloudTrail for auditing
+
 ✅ Enable network policies in Kubernetes
+
 ✅ Scan Docker images before deployment using Trivy
 
 Phase 5: Monitoring & Logging
+
 ✅ Use Prometheus & Grafana to collect and visualize metrics
+
 ✅ Implement ELK Stack (Elasticsearch, Logstash, Kibana) for logging
 
 Bonus: Automate Everything with Ansible
@@ -50,6 +61,9 @@ Once everything is working, use Ansible to:
 * Manage security policies
 
 Next Steps
+
 🔥 Pick a cloud provider account (AWS Free Tier) 
+
 🔥 Start with Terraform to create the basic AWS setup 
+
 🔥 Document everything in GitHub (README, Terraform files, Ansible playbooks)
