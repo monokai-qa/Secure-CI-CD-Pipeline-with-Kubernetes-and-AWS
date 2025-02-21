@@ -1,18 +1,21 @@
-// Provides a S3 bucket resource
-resource "aws_s3_bucket" "terraform_state" {
-    // Name of the bucket. If omitted, Terraform will assign a random, unique name.
-    bucket = "monokai-s3-state-bucket"
+# Enable versioning using the new aws_s3_bucket_versioning resource
+resource "aws_s3_bucket_versioning" "terraform_state_versioning" {
+  bucket = "monokai-s3-state-bucket"
+  versioning_configuration {
+    status = "Enabled"
+  }
+}
 
-    // Configuration of the S3 bucket versioning state
-    versioning {
-        enabled = true
-    }
+# Use the new aws_s3_bucket_lifecycle_configuration for lifecycle rules
+resource "aws_s3_bucket_lifecycle_configuration" "terraform_state_lifecycle" {
+  bucket = "monokai-s3-state-bucket"
 
-    lifecycle {
-        prevent_destroy = false
-    }
+  rule {
+    id     = "prevent_destroy"
+    status = "Enabled"
 
-    tags = {
-        Name = "Terraform State Bucket"
+    expiration {
+      days = 365
     }
+  }
 }
