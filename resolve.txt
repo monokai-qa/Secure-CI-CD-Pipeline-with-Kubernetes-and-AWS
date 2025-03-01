@@ -1,0 +1,111 @@
+Generate monokai-s3-state-bucket and remove it in the end
+----
+
+During phase1: Node Group added
+╷
+│ Error: waiting for EKS Node Group (my-eks-cluster:my-node-group) create: unexpected state 'CREATE_FAILED', wanted target 'ACTIVE'. last error: i-0f9ce340b8db238ae, i-0237e02c1735c090b: NodeCreationFailure: Unhealthy nodes in the kubernetes cluster
+│ 
+│   with aws_eks_node_group.eks_node_group,
+│   on eks.tf line 63, in resource "aws_eks_node_group" "eks_node_group":
+│   63: resource "aws_eks_node_group" "eks_node_group" {
+│ 
+╵
+Terraform apply failed!
+
+It seems that the issue you're facing relates to Kubernetes RBAC permissions, which prevent the current IAM principal (user/role) from accessing Kubernetes resources in your cluster.
+
+Here’s a step-by-step guide to address this issue:
+
+1. Verify and Update AWS IAM Permissions
+First, confirm that the IAM role associated with the EKS Cluster has sufficient permissions. You can check the role in the AWS IAM console to ensure it has the necessary policies attached, such as:
+
+AmazonEKSClusterPolicy
+AmazonEKSWorkerNodePolicy
+AmazonEC2ContainerRegistryReadOnly
+Additionally, ensure that the IAM role used by your user (or service account) has the right permissions to interact with EKS.
+
+2. Check the Kubernetes aws-auth ConfigMap
+For your IAM principal (user or role) to access Kubernetes resources, it needs to be mapped in the aws-auth ConfigMap in your EKS cluster.
+
+Here’s how to check and update the aws-auth ConfigMap:
+
+a. Access the EKS Cluster
+Ensure your kubectl is properly configured to interact with the correct EKS cluster:
+
+bash
+Copy
+Edit
+aws eks --region <region> update-kubeconfig --name my-eks-cluster
+b. Get the aws-auth ConfigMap
+Run the following command to check the current mappings in your aws-auth ConfigMap:
+
+bash
+Copy
+Edit
+kubectl describe configmap -n kube-system aws-auth
+You should see something like this:
+
+yaml
+Copy
+Edit
+Data
+----
+mapRoles: |
+  - rolearn: arn:aws:iam::<aws_account_id>:role/eks-cluster-role
+    username: eks-node-group
+    groups:
+      - system:masters
+mapUsers: |
+  - userarn: arn:aws:iam::<aws_account_id>:user/my-iam-user
+    username: my-iam-user
+    groups:
+      - system:masters
+If your IAM role or user isn’t listed here, you'll need to add it.
+
+c. Add Your IAM Role/User to aws-auth
+To grant Kubernetes RBAC permissions to your IAM role or user, update the aws-auth ConfigMap.
+
+For example, to map your IAM role to the system:masters group (which gives admin access):
+
+bash
+Copy
+Edit
+kubectl apply -f - <<EOF
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: aws-auth
+  namespace: kube-system
+data:
+  mapRoles: |
+    - rolearn: arn:aws:iam::<aws_account_id>:role/eks-cluster-role
+      username: eks-node-group
+      groups:
+        - system:masters
+  mapUsers: |
+    - userarn: arn:aws:iam::<aws_account_id>:user/my-iam-user
+      username: my-iam-user
+      groups:
+        - system:masters
+EOF
+Adjust the rolearn and userarn accordingly for your IAM role or user.
+
+d. Verify Permissions
+After applying the changes, run:
+
+bash
+Copy
+Edit
+kubectl get nodes
+This should list the nodes in the cluster if your IAM role or user has the correct RBAC permissions.
+
+3. Verify Node Group Creation
+After resolving the IAM RBAC issue, go back to your EKS Console to check if the node group (my-node-group) is successfully created and its status changes to Active. If the node group is stuck in the Creating state, this will likely be resolved after fixing the IAM role and RBAC permissions.
+
+4. Apply Terraform Again (if needed)
+If the node group still needs to be recreated or you want to ensure all configurations are correctly applied, run terraform apply again. This should be successful now that the IAM role has the correct permissions to interact with Kubernetes.
+
+5. Check EC2 Instances
+Finally, check if the EC2 instances associated with the node group are up and running. In the EC2 console, look for instances with the same name as the node group. They should be automatically created once the node group is successfully provisioned.
+
+Let me know if you need further assistance with any of these steps!

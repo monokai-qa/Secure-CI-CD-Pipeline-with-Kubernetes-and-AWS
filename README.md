@@ -26,13 +26,13 @@ Phase 2: Kubernetes Cluster Setup & Deployment
 
 ✅ Deploy a simple Node.js or Python Flask app in a Docker container
 
-✅ Use Helm charts to manage Kubernetes deployments
+❌ Use Helm charts to manage Kubernetes deployments
 
-✅ Implement Ingress Controller for traffic routing
+❌ Implement Ingress Controller for traffic routing
 
 Phase 3: CI/CD Pipeline Automation
 
-✅ Use Jenkins/GitHub Actions to:
+❌ Use Jenkins/GitHub Actions to:
 * Build & push Docker images to Amazon ECR
 * Deploy to Kubernetes using Helm
 * Run security scans using Trivy
@@ -40,19 +40,19 @@ Phase 3: CI/CD Pipeline Automation
 
 Phase 4: Security Hardening (DevSecOps)
 
-✅ Implement IAM best practices (least privilege access)
+❌ Implement IAM best practices (least privilege access)
 
-✅ Set up AWS Security Hub & CloudTrail for auditing
+❌ Set up AWS Security Hub & CloudTrail for auditing
 
-✅ Enable network policies in Kubernetes
+❌ Enable network policies in Kubernetes
 
-✅ Scan Docker images before deployment using Trivy
+❌ Scan Docker images before deployment using Trivy
 
 Phase 5: Monitoring & Logging
 
-✅ Use Prometheus & Grafana to collect and visualize metrics
+❌ Use Prometheus & Grafana to collect and visualize metrics
 
-✅ Implement ELK Stack (Elasticsearch, Logstash, Kibana) for logging
+❌ Implement ELK Stack (Elasticsearch, Logstash, Kibana) for logging
 
 Bonus: Automate Everything with Ansible
 Once everything is working, use Ansible to:
