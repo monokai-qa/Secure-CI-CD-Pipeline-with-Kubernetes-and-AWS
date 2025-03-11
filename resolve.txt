@@ -3,7 +3,7 @@ Generate monokai-s3-state-bucket and remove it in the end
 
 During phase1: Node Group added
 ╷
-│ Error: waiting for EKS Node Group (my-eks-cluster:my-node-group) create: unexpected state 'CREATE_FAILED', wanted target 'ACTIVE'. last error: i-0f9ce340b8db238ae, i-0237e02c1735c090b: NodeCreationFailure: Unhealthy nodes in the kubernetes cluster
+│ Error: waiting for EKS Node Group (eks-cluster:my-node-group) create: unexpected state 'CREATE_FAILED', wanted target 'ACTIVE'. last error: i-0f9ce340b8db238ae, i-0237e02c1735c090b: NodeCreationFailure: Unhealthy nodes in the kubernetes cluster
 │ 
 │   with aws_eks_node_group.eks_node_group,
 │   on eks.tf line 63, in resource "aws_eks_node_group" "eks_node_group":
@@ -35,7 +35,7 @@ Ensure your kubectl is properly configured to interact with the correct EKS clus
 bash
 Copy
 Edit
-aws eks --region <region> update-kubeconfig --name my-eks-cluster
+aws eks --region <region> update-kubeconfig --name eks-cluster
 b. Get the aws-auth ConfigMap
 Run the following command to check the current mappings in your aws-auth ConfigMap:
 

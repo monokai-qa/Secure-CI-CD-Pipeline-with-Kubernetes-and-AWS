@@ -3,3 +3,5 @@
 .terraform.lock.hcl
 app/node_modules
 terraform.tfstate
+terraform.tfstate.backup
+.terraform.tfstate.lock.info

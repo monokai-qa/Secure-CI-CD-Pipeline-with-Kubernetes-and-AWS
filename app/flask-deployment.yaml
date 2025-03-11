@@ -1,19 +1,19 @@
 apiVersion: apps/v1
 kind: Deployment
 metadata:
-  name: flask-app-deployment
+  name: flask-deployment
 spec:
-  replicas: 2
+  replicas: 1
   selector:
     matchLabels:
-      app: flask-app
+      app: flask
   template:
     metadata:
       labels:
-        app: flask-app
+        app: flask
     spec:
       containers:
-      - name: flask-app
-        image: 715841356514.dkr.ecr.eu-north-1.amazonaws.com/flask-docker-repo:latest
+      - name: flask-container
+        image: larasai/flask-pyhton
         ports:
         - containerPort: 5000

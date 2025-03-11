@@ -1,105 +1,51 @@
-# IAM Role for EKS Cluster
-resource "aws_iam_role" "eks_role" {
-  name = "eks-cluster-role"
+## Reference: https://dev.to/mariehposa/managing-aws-eks-with-terraform-4ma8
 
+# Now, create the EKS cluster itself, along with the required IAM role to manage the cluster. 
+# The EKS cluster needs an IAM role that grants it permissions to manage AWS services. 
+# Therefore, attach eks_role with the necessary policies to EKS.
+# Also create an EKS cluster using aws_eks_cluster and specify the VPC subnets created.
+
+resource "aws_iam_role" "eks_role" {
+  name = "eks-role"
   assume_role_policy = jsonencode({
     Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "eks.amazonaws.com"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = ["eks.amazonaws.com", "ec2.amazonaws.com"]
+        }
       }
-      Action = "sts:AssumeRole"
-    }]
+    ]
   })
 }
 
-# IAM Policy Attachment for EKS Cluster
 resource "aws_iam_role_policy_attachment" "eks_policy" {
   role       = aws_iam_role.eks_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSClusterPolicy"
 }
 
-# EKS Cluster
-resource "aws_eks_cluster" "eks_cluster" {
-  name     = "my-eks-cluster"
-  role_arn = aws_iam_role.eks_role.arn
-
-  vpc_config {
-    subnet_ids = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]  # Referencing subnets from vpc.tf
-  }
-
-  depends_on = [aws_iam_role_policy_attachment.eks_policy]
-}
-
-# IAM Role for EKS Node Group
-resource "aws_iam_role" "eks_node_role" {
-  name = "eks-node-role"
-
-  assume_role_policy = jsonencode({
-    Version = "2012-10-17"
-    Statement = [{
-      Effect = "Allow"
-      Principal = {
-        Service = "ec2.amazonaws.com"
-      }
-      Action = "sts:AssumeRole"
-    }]
-  })
-}
-
-# IAM Policy Attachments for EKS Node Role
-resource "aws_iam_role_policy_attachment" "eks_node_policy_attachment" {
-  role       = aws_iam_role.eks_node_role.name
+resource "aws_iam_role_policy_attachment" "eks_node_policy" {
+  role       = aws_iam_role.eks_role.name
   policy_arn = "arn:aws:iam::aws:policy/AmazonEKSWorkerNodePolicy"
 }
 
-resource "aws_iam_role_policy_attachment" "eks_vpc_policy_attachment" {
-  role       = aws_iam_role.eks_node_role.name
-  policy_arn = "arn:aws:iam::aws:policy/AmazonVPCFullAccess"
+resource "aws_iam_role_policy_attachment" "eks_cni_policy" {
+  role       = aws_iam_role.eks_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEKS_CNI_Policy"
 }
 
-# EKS Node Group
-resource "aws_eks_node_group" "eks_node_group" {
-  cluster_name    = aws_eks_cluster.eks_cluster.name
-  node_group_name = "my-node-group"
-  node_role_arn   = aws_iam_role.eks_node_role.arn
-  subnet_ids      = [aws_subnet.public_subnet_1.id, aws_subnet.public_subnet_2.id]
-
-  scaling_config {
-    desired_size = 2
-    max_size     = 3
-    min_size     = 1
-  }
-
-  instance_types = ["t3.medium"]
+resource "aws_iam_role_policy_attachment" "eks_ec2_policy" {
+  role       = aws_iam_role.eks_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonEC2ContainerRegistryReadOnly"
 }
 
-# (Optional) Security Group for EKS Node Group
-resource "aws_security_group" "eks_sg" {
-  name        = "eks-node-sg"
-  description = "Allow traffic for EKS node group"
-  vpc_id      = aws_vpc.eks_vpc.id
+resource "aws_eks_cluster" "eks_cluster" {
+  name     = "eks-cluster"
+  role_arn = aws_iam_role.eks_role.arn
 
-  egress {
-    from_port   = 0
-    to_port     = 0
-    protocol    = "-1"
-    cidr_blocks = ["0.0.0.0/0"]
-  }
-
-  ingress {
-    from_port   = 80
-    to_port     = 80
-    protocol    = "tcp"
-    cidr_blocks = ["0.0.0.0/0"]
+  vpc_config {
+    subnet_ids = aws_subnet.eks_subnet[*].id
   }
 }
-
-# Node Group Launch Template (Optional for customizations)
-resource "aws_launch_template" "eks_node_group_template" {
-  name_prefix   = "eks-node-group-template"
-  instance_type = "t3.medium"
-  security_group_names = [aws_security_group.eks_sg.name]
-}
-

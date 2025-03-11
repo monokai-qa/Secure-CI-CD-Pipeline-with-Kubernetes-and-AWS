@@ -1,3 +1,5 @@
+## Reference: https://medium.com/featurepreneur/deploying-a-flask-app-to-kubernetes-f05c93866aff
+
 from flask import Flask
 
 app = Flask(__name__)
