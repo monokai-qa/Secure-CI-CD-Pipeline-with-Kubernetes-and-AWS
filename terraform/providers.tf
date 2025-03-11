@@ -5,13 +5,6 @@ terraform {
       version = "~> 5.0"
     }
   }
-
-  backend "s3" {
-    bucket         = "monokai-s3-state-bucket" // S3 bucket created by me
-    key            = "terraform.tfstate"
-    region         = "eu-north-1"
-    encrypt        = true
-  }
 }
 
 provider "aws" {
