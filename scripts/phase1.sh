@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# chmod +x phase1.sh && ./phase1.sh
+# chmod +x scripts/phase1.sh && ./scripts/phase1.sh
 
 cd terraform
 

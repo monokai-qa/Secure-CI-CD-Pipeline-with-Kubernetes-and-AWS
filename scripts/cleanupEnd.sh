@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# chmod +x cleanupEnd.sh && ./cleanupEnd.sh
+# chmod +x scripts/cleanupEnd.sh && ./scripts/cleanupEnd.sh
 
 # Re-initialize the Terraform backend before destroying resources
 terraform init -reconfigure

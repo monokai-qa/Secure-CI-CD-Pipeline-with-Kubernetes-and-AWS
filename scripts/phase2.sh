@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# chmod +x phase2.sh && ./phase2.sh
+# chmod +x scripts/phase2.sh && ./scripts/phase2.sh
 
 echo "Starting Phase 2..."
 
