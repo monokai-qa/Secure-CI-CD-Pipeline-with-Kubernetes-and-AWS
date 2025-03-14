@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# chmod +x phase2.sh && ./phase2.sh
+# chmod +x scripts/phase2.sh && ./scripts/phase2.sh
 
 echo "Starting Phase 2..."
 
@@ -24,23 +24,12 @@ kubectl apply -f flask-deployment.yaml
 
 # Step 5: Wait for Pods to be running
 echo "Waiting for Flask app Pods to be running..."
-kubectl rollout status deployment flask-app-deployment
+kubectl rollout status deployment flask-deployment
 
 # Step 6: Get External IP of the Service
 echo "Fetching Flask app service external IP..."
-SERVICE_IP=$(kubectl get svc flask-app-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
+SERVICE_IP=$(kubectl get svc flask-service -o jsonpath='{.status.loadBalancer.ingress[0].hostname}')
 
 echo "Flask app is available at: http://$SERVICE_IP"
 
 echo "Phase 2 completed successfully!"
-
-
-# Create docker image
-#docker build -t python-flask:v1 .
-#docker images
-
-# Create the Deployment and Service
-#kubectl apply -f flask-deployment.yaml
-#kubectl get deployment
-#kubectl get pods
-#kubectl get svc

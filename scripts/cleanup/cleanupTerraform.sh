@@ -1,6 +1,6 @@
 #!/bin/bash
 
-# chmod +x cleanupBeginning.sh && ./cleanupBeginning.sh
+# chmod +x scripts/cleanup/cleanupTerraform.sh && ./scripts/cleanup/cleanupTerraform.sh
 
 # Remove all generated Terraform files
 cd terraform
