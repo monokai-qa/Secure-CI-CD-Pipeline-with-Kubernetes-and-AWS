@@ -2,14 +2,11 @@
 
 # chmod +x scripts/cleanupBeginning.sh && ./scripts/cleanupBeginning.sh
 
-# Remove all generated Terraform files
-cd terraform
+#Remove all Terraform created previously
+chmod +x scripts/cleanup/cleanupTerraform.sh && ./scripts/cleanup/cleanupTerraform.sh
 
-rm .terraform.lock.hcl
-rm terraform.tfstate
-rm .terraform.tfstate.lock.info
-rm terraform.tfstate.backup
-rm -r .terraform/*
-rmdir .terraform
+#Remove all VPCs created previously
+chmod +x scripts/cleanup/cleanupVPCs.sh && ./scripts/cleanup/cleanupVPCs.sh
 
-cd ..
+#Remove all IAM Roles created previously
+chmod +x scripts/cleanup/cleanupIAMRoles.sh && ./scripts/cleanup/cleanupIAMRoles.sh
